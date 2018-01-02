@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FB6756E3-AAB3-4DC3-97C6-470044D35355}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6ADEF306-35DC-43EF-A9AB-B0198B2E34C1}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CelebrateInASnap", "src\CelebrateInASnap\CelebrateInASnap.xproj", "{2DA96AE2-0673-404C-8CB1-095DCD019107}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2DA96AE2-0673-404C-8CB1-095DCD019107}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DA96AE2-0673-404C-8CB1-095DCD019107}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DA96AE2-0673-404C-8CB1-095DCD019107}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DA96AE2-0673-404C-8CB1-095DCD019107}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2DA96AE2-0673-404C-8CB1-095DCD019107} = {FB6756E3-AAB3-4DC3-97C6-470044D35355}
+	EndGlobalSection
+EndGlobal
