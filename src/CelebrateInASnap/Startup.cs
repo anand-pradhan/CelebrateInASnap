@@ -9,6 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using CelebrateInASnap.Interfaces;
 using CelebrateInASnap.Services;
+using CelebrateInASnap.Data;
+using CelebrateInASnap.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CelebrateInASnap.Repositories;
+using Microsoft.AspNetCore.Http;
 
 namespace CelebrateInASnap
 {
@@ -29,10 +35,23 @@ namespace CelebrateInASnap
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDbContext>(options =>
+                            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
+
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(sp => ShoppingCart.GetCart(sp));
+            services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddScoped<IPayPalPaymentService, PayPalPaymentService>();
 
-            // Add framework services.
             services.AddMvc();
+            services.AddMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,14 +70,31 @@ namespace CelebrateInASnap
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseStatusCodePages();
             app.UseStaticFiles();
+            app.UseSession();
+            app.UseIdentity();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                   name: "productdetails",
+                   template: "Product/Details/{productId?}",
+                   defaults: new { Controller = "Product", action = "Details" });
+
+                routes.MapRoute(
+                    name: "categoryfilter",
+                    template: "Product/{action}/{category?}",
+                    defaults: new { Controller = "Product", action = "List" });
+
+                routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{Id?}");
+
+                routes.MapRoute("paypal", "{controller=PayPal}/{action=CreatePayment}/{order?}");
             });
+
+            DbInitializer.Seed(app);
         }
     }
 }

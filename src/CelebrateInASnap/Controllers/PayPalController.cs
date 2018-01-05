@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CelebrateInASnap.Interfaces;
 using CelebrateInASnap.Services;
+using CelebrateInASnap.Models;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,9 +14,12 @@ namespace CelebrateInASnap.Controllers
     public class PayPalController : Controller
     {
         private readonly IPayPalPaymentService _payPalPaymentService;
-        public PayPalController(IPayPalPaymentService payPalPaymentService)
+        private readonly ShoppingCart _shoppingCart;
+
+        public PayPalController(IPayPalPaymentService payPalPaymentService, ShoppingCart shoppingCart)
         {
             _payPalPaymentService = payPalPaymentService;
+            _shoppingCart = shoppingCart;
         }
 
         public IActionResult Index()
@@ -24,7 +28,7 @@ namespace CelebrateInASnap.Controllers
         }
         public IActionResult CreatePayment()
         {
-            var payment = _payPalPaymentService.CreatePayment(GetBaseUrl(), "sale");
+            var payment = _payPalPaymentService.CreatePayment(GetBaseUrl(), "sale", _shoppingCart);
 
             return Redirect(payment.GetApprovalUrl());
         }

@@ -1,4 +1,5 @@
 ﻿using CelebrateInASnap.Interfaces;
+using CelebrateInASnap.Models;
 using PayPal.Api;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,14 @@ namespace CelebrateInASnap.Services
 {
     public class PayPalPaymentService : IPayPalPaymentService
     {
-        public Payment CreatePayment(string baseUrl, string intent)
+        //private readonly ShoppingCart _shoppingCart;
+
+        //public PayPalPaymentService(ShoppingCart shoppingCart)
+        //{
+        //    _shoppingCart = shoppingCart;
+        //}
+
+        public Payment CreatePayment(string baseUrl, string intent, ShoppingCart shoppingCart)
         {
             // ### Api Context
             // Pass in a `APIContext` object to authenticate 
@@ -23,7 +31,7 @@ namespace CelebrateInASnap.Services
             {
                 intent = intent,    // `sale` or `authorize`
                 payer = new Payer() { payment_method = "paypal" },
-                transactions = GetTransactionsList(),
+                transactions = GetTransactionsList(shoppingCart),
                 redirect_urls = GetReturnUrls(baseUrl, intent)
             };
 
@@ -33,11 +41,14 @@ namespace CelebrateInASnap.Services
             return createdPayment;
         }
 
-        private List<Transaction> GetTransactionsList()
+        private List<Transaction> GetTransactionsList(ShoppingCart shoppingCart)
         {
             // A transaction defines the contract of a payment
             // what is the payment for and who is fulfilling it. 
             var transactionList = new List<Transaction>();
+            var items = shoppingCart.GetShoppingCartItems();
+            shoppingCart.ShoppingCartItems = items;
+            var orderTotal = shoppingCart.GetShoppingCartTotal();
 
             // The Payment creation API requires a list of Transaction; 
             // add the created Transaction to a List
@@ -48,12 +59,12 @@ namespace CelebrateInASnap.Services
                 amount = new Amount()
                 {
                     currency = "USD",
-                    total = "100.00",       // Total must be equal to sum of shipping, tax and subtotal.
+                    total = orderTotal.ToString(),       // Total must be equal to sum of shipping, tax and subtotal.
                     details = new Details() // Details: Let's you specify details of a payment amount.
                     {
-                        tax = "15",
-                        shipping = "10",
-                        subtotal = "75"
+                        //tax = "15",
+                        //shipping = "10",
+                        subtotal = orderTotal.ToString()
                     }
                 },
                 item_list = new ItemList()
@@ -64,13 +75,14 @@ namespace CelebrateInASnap.Services
                         {
                             name = "Item Name",
                             currency = "USD",
-                            price = "15",
-                            quantity = "5",
+                            price = orderTotal.ToString(),
+                            quantity = "1",
                             sku = "sku"
                         }
                     }
                 }
             });
+            shoppingCart.ClearCart();
             return transactionList;
         }
 
