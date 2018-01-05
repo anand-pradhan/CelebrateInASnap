@@ -24,8 +24,8 @@ namespace CelebrateInASnap.Services
         {
             // ConfigManager.Instance.GetProperties(); // it doesn't work on ASPNET 5
             return new Dictionary<string, string>() {
-                { "clientId", "ARa53oVeg0f889zoptlyKIoMG4HVz15Rc5AgeZM4H0iIujNLnAVyC75Jsf6yxjo_5kpjbVAugDnKgoA9" },
-                { "clientSecret", "EPrV8l4dHO0r5NaBFLKclmvbfqdlspJV0nes-EbYGuA0sqFnsofQTrrupbJ-Ns8SyiUaZzSB5piVg4Jp" }
+                { "clientId", "" },
+                { "clientSecret", "" }
             };
         }
 
